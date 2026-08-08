@@ -9,6 +9,7 @@ Functional requirements:
 5.	The system must allow users to retrieve detailed information about a single book, author, genre, or publisher by ID;
 6.	The system must allow the admin to add new books, authors, genres, publishing houses, languages, and cover types ;
 7.	The system must allow admins to delete books, authors genres etc. from the catalogue.
+
 Non-Functional requirements:
 1.	Security & Authorization. Access to modification endpoints (POST, PUT, PATCH, DELETE) must be restricted to authenticated users with the ADMIN role;
 2.	Error Handling & Reliability. In the event of invalid user input, missing resources, or authorization failures, the system must return meaningful HTTP status codes;
