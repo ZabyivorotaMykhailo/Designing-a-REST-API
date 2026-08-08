@@ -1,6 +1,7 @@
 # Designing-a-REST-API
 Catalogue(a library - books)
 Requirements
+
 Functional requirements:
 1.	The system must allow users to retrieve a paginated list of books;
 2.	The system must allow users to filter books by name, language, publishing house, cover type, author, genre, and page count;
