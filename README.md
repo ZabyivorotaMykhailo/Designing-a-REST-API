@@ -20,77 +20,168 @@ Non-Functional requirements:
 
  
 
+Проблема возникла из-за того, что при вставке из обычного текста пропали переносы строк, и всё слилось в сплошной массив текста с точками.
+
+Ниже представлен идеально отформатированный Markdown-текст. Вы можете скопировать его напрямую в файл README.md на GitHub/GitLab, в Notion или в MS Word (при вставке сохранятся все заголовки, жирный шрифт и списки).
+
+Database Entities & API Specification
+1. Database Entities
 book
-•	idbook — unique identifier of the book: INT NOT NULL
-•	name — title of the book: VARCHAR(60) NOT NULL
-•	publicationDate — date when the book was published: DATE NOT NULL
-•	publishing_house_idpublishing_house — foreign key referencing the publisher: INT NOT NULL
-•	page — total number of pages: INT NOT NULL
-•	amount — quantity of book copies available in stock: INT NOT NULL
-•	ISBN — International Standard Book Number: VARCHAR(20) NOT NULL
-•	description - description of the book: TEXT(300)
-•	cover_idcover — foreign key referencing the cover type: INT NOT NULL
-•	language_idlanguage — foreign key referencing the language of the book: INT NOT NULL
+idbook — unique identifier of the book: INT NOT NULL
+
+name — title of the book: VARCHAR(60) NOT NULL
+
+publicationDate — date when the book was published: DATE NOT NULL
+
+publishing_house_idpublishing_house — foreign key referencing the publisher: INT NOT NULL
+
+page — total number of pages: INT NOT NULL
+
+amount — quantity of book copies available in stock: INT NOT NULL
+
+ISBN — International Standard Book Number: VARCHAR(20) NOT NULL
+
+description — description of the book: TEXT(300)
+
+cover_idcover — foreign key referencing the cover type: INT NOT NULL
+
+language_idlanguage — foreign key referencing the language of the book: INT NOT NULL
+
 author
-•	idauthor — unique identifier of the author: INT NOT NULL
-•	fullName — author's full name: VARCHAR(100) NOT NULL
-•	biography — short biography of the author: TEXT(300) NOT NULL
+idauthor — unique identifier of the author: INT NOT NULL
+
+fullName — author's full name: VARCHAR(100) NOT NULL
+
+biography — short biography of the author: TEXT(300) NOT NULL
+
 genre
-•	idgenre — unique identifier of the genre: INT NOT NULL
-•	genreName — name of the genre (e.g., Fantasy, Sci-Fi): VARCHAR(45) NOT NULL
+idgenre — unique identifier of the genre: INT NOT NULL
+
+genreName — name of the genre (e.g., Fantasy, Sci-Fi): VARCHAR(45) NOT NULL
+
 publishing_house
-•	idpublishing_house — unique identifier of the publishing house: INT NOT NULL
-•	name — name of the publisher: VARCHAR(45) NOT NULL
+idpublishing_house — unique identifier of the publishing house: INT NOT NULL
+
+name — name of the publisher: VARCHAR(45) NOT NULL
+
 language
-•	idlanguage — unique identifier of the language: INT NOT NULL
-•	name — language name (e.g., English, Ukrainian): VARCHAR(45) NOT NULL
+idlanguage — unique identifier of the language: INT NOT NULL
+
+name — language name (e.g., English, Ukrainian): VARCHAR(45) NOT NULL
+
 cover
-•	idcover — unique identifier of the cover type: INT NOT NULL
-•	name — type of binding/cover (e.g., Hardcover, Paperback): VARCHAR(20) NOT NULL
-Operations:
-GET - /books — Browse the book catalogue with support for search, filtering, sorting, and pagination
+idcover — unique identifier of the cover type: INT NOT NULL
+
+name — type of binding/cover (e.g., Hardcover, Paperback): VARCHAR(20) NOT NULL
+
+2. API Operations Specification
+Books (/books)
+GET /books
+Description: Browse the book catalogue with support for search, filtering, sorting, and pagination.
+
 Query Params:
-o	Filter: language_id, publishing_house_id, cover_id, author_id, genre_id, min_pages, max_pages
-o	Search: search by name and ISBN
-o	Order By : sort (publicationDate:asc/desc, name:asc/desc)
-o	Pagination: page (from 1), limit (10)
-•	Caching: Cache-Control: public, max-age=300
-•	Responses: 200 OK, 400 Bad Request
-GET - /books/{id} —  Retrieve detailed information about a specific book by id.
-•	Responses: 200 OK, 404 Not Found
-POST - /books — Add a new book to the catalogue (Admin only).
-•	Responses: 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden
-PUT - /books/{id} — Completely replace all fields of a book by its id (Admin only).
-•	Responses: 200 OK, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found
-PATCH - /books/{id} — Partially modify specific attributes of a book (e.g., only amount or description) (Admin only).
-•	Responses: 200 OK, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found
-DELETE - /books/{id} — Remove a book from the system (Admin only).
-•	Responses: 204 No Content, 401 Unauthorized, 403 Forbidden, 404 Not Found
-GET - /authors — Browse the list of authors.
-•	Query Params:
-o	Search: fullName
-o	Order By: sort (fullName:asc/desc)
-o	Pagination: page, limit
-•	Caching: Cache-Control: public, max-age=86400
-•	Responses: 200 OK, 400 Bad Request
-GET - /authors/{id} — Retrieve detailed information and biography of a specific author using id.
-•	Responses: 200 OK, 404 Not Found
-POST - /authors — Create a new author entry (Admin only).
-•	Responses: 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden
-GET - /genres — Browse the complete list of genres.
-•	Query Params:
-o	Search: genreName
-o	Pagination: page, limit
-•	Caching: Cache-Control: public, max-age=86400
-•	Responses: 200 OK
-POST - /genres — Create a new genre entry (Admin only).
-•	Responses: 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden
-GET - /publishing-houses — Browse the list of publishing houses.
-•	Query Params:
-o	Search: name
-o	Pagination: page, limit
-•	Responses: 200 OK
-GET - /languages — List available book languages (e.g., English, Ukrainian).
-•	Responses: 200 OK
-GET - /covers — List cover/binding types (e.g., Hardcover, Paperback).
-•	Responses: 200 OK
+
+Filter: language_id, publishing_house_id, cover_id, author_id, genre_id, min_pages, max_pages
+
+Search: search by name and ISBN
+
+Order By: sort (publicationDate:asc/desc, name:asc/desc)
+
+Pagination: page (default: 1), limit (default: 10)
+
+Caching: Cache-Control: public, max-age=300
+
+Responses: 200 OK, 400 Bad Request
+
+GET /books/{id}
+Description: Retrieve detailed information about a specific book by ID.
+
+Responses: 200 OK, 404 Not Found
+
+POST /books
+Description: Add a new book to the catalogue (Admin only).
+
+Responses: 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden
+
+PUT /books/{id}
+Description: Completely replace all fields of a book by its ID (Admin only).
+
+Responses: 200 OK, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found
+
+PATCH /books/{id}
+Description: Partially modify specific attributes of a book (e.g., only amount or description) (Admin only).
+
+Responses: 200 OK, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found
+
+DELETE /books/{id}
+Description: Remove a book from the system (Admin only).
+
+Responses: 204 No Content, 401 Unauthorized, 403 Forbidden, 404 Not Found
+
+Authors (/authors)
+GET /authors
+Description: Browse the list of authors.
+
+Query Params:
+
+Search: fullName
+
+Order By: sort (fullName:asc/desc)
+
+Pagination: page, limit
+
+Caching: Cache-Control: public, max-age=86400
+
+Responses: 200 OK, 400 Bad Request
+
+GET /authors/{id}
+Description: Retrieve detailed information and biography of a specific author using ID.
+
+Responses: 200 OK, 404 Not Found
+
+POST /authors
+Description: Create a new author entry (Admin only).
+
+Responses: 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden
+
+Genres (/genres)
+GET /genres
+Description: Browse the complete list of genres.
+
+Query Params:
+
+Search: genreName
+
+Pagination: page, limit
+
+Caching: Cache-Control: public, max-age=86400
+
+Responses: 200 OK
+
+POST /genres
+Description: Create a new genre entry (Admin only).
+
+Responses: 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden
+
+Publishing Houses (/publishing-houses)
+GET /publishing-houses
+Description: Browse the list of publishing houses.
+
+Query Params:
+
+Search: name
+
+Pagination: page, limit
+
+Responses: 200 OK
+
+Lookups (/languages & /covers)
+GET /languages
+Description: List available book languages (e.g., English, Ukrainian).
+
+Responses: 200 OK
+
+GET /covers
+Description: List cover/binding types (e.g., Hardcover, Paperback).
+
+Responses: 200 OK
